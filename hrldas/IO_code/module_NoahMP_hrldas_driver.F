@@ -385,7 +385,7 @@ contains
        call get_from_restart(xstart, xend, xstart, ixfull, jxfull, "ACC_EDIR"  , NoahmpIO%ACC_EDIRXY  )
 
        ! below for irrigation scheme
-       if ( NoahmpIO%IOPT_IRR > 0 ) then
+       if ( (NoahmpIO%IOPT_IRR > 0) .or. (NoahmpIO%USER_DEFINE_MODE == 1) ) then
           call get_from_restart(xstart, xend, xstart, ixfull, jxfull, "IRNUMSI" , NoahmpIO%IRNUMSI  )
           call get_from_restart(xstart, xend, xstart, ixfull, jxfull, "IRNUMMI" , NoahmpIO%IRNUMMI  )
           call get_from_restart(xstart, xend, xstart, ixfull, jxfull, "IRNUMFI" , NoahmpIO%IRNUMFI  )
@@ -923,7 +923,7 @@ contains
                          NoahmpIO%COSZEN(I,J),NoahmpIO%JULIAN,NoahmpIO%HRANG(I,J),       &
                          NoahmpIO%DECLIN, NoahmpIO%GMT, NoahmpIO%JULDAY)
       ENDIF
-      IF(NoahmpIO%IOPT_IRR > 0 ) THEN
+      IF((NoahmpIO%IOPT_IRR > 0) .or. (NoahmpIO%USER_DEFINE_MODE == 1) ) THEN
          call LOCAL_TIME(NoahmpIO%OLDDATE(1:19), NoahmpIO%XLONG(I,J), NoahmpIO%LOCTIM(I,J)) 
       ENDIF
     END DO
@@ -1248,7 +1248,7 @@ contains
               call add_to_output(NoahmpIO%FORCWLSM   , "FORCWLSM", "lowest model wind speed into LSM"                         , "m/s"     )
             endif
             ! Irrigation
-            if ( NoahmpIO%IOPT_IRR > 0 ) then
+            if ( (NoahmpIO%IOPT_IRR > 0) .or. (NoahmpIO%USER_DEFINE_MODE == 1) ) then
               call add_to_output(NoahmpIO%IRNUMSI    , "IRNUMSI" , "Sprinkler irrigation count"                               , "-"       )
               call add_to_output(NoahmpIO%IRNUMMI    , "IRNUMMI" , "Micro irrigation count"                                   , "-"       )
               call add_to_output(NoahmpIO%IRNUMFI    , "IRNUMFI" , "Flood irrigation count"                                   , "-"       )
@@ -1408,7 +1408,7 @@ subroutine lsm_restart()
   call add_to_restart(NoahmpIO%ACC_ETRANXY ,"ACC_ETRAN" )
   call add_to_restart(NoahmpIO%ACC_EDIRXY  ,"ACC_EDIR"  )
  ! irrigation scheme
-  if ( NoahmpIO%IOPT_IRR > 0 ) then
+  if ( (NoahmpIO%IOPT_IRR > 0) .or. (NoahmpIO%USER_DEFINE_MODE == 1) ) then
      call add_to_restart(NoahmpIO%IRNUMSI   , "IRNUMSI")
      call add_to_restart(NoahmpIO%IRNUMMI   , "IRNUMMI")
      call add_to_restart(NoahmpIO%IRNUMFI   , "IRNUMFI")

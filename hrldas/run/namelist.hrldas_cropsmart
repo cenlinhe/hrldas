@@ -1,0 +1,83 @@
+&NOAHLSM_OFFLINE
+
+ HRLDAS_SETUP_FILE = "/glade/work/cenlinhe/NSF_CropSmart_GMU/HRLDAS_setup_2017100100_d1"
+ INDIR = "/glade/derecho/scratch/cenlinhe/NSF_CropSmart_GMU/forcing/NWM_fcst/hrldas_file/"
+ OUTDIR = "/glade/derecho/scratch/cenlinhe/NSF_CropSmart_GMU/forcing/NWM_fcst/hrldas_output/"
+
+ START_YEAR  = 2024
+ START_MONTH = 05
+ START_DAY   = 20
+ START_HOUR  = 00
+ START_MIN   = 00
+
+! RESTART_FILENAME_REQUESTED = "/glade/scratch/cenlinhe/test/hrldas_output/RESTART.2000010100_DOMAIN1"
+
+ KDAY = 9
+ SPINUP_LOOPS = 0
+
+ FORCING_NAME_T = "t2d_nwm"
+ FORCING_NAME_Q = "q2d_nwm"
+ FORCING_NAME_U = "u2d_nwm"
+ FORCING_NAME_V = "v2d_nwm"
+ FORCING_NAME_P = "psfc_nwm"
+ FORCING_NAME_LW = "lwdown_nwm"
+ FORCING_NAME_SW = "swdown_nwm"
+ FORCING_NAME_PR = "rainrate_nwm"
+
+ DYNAMIC_VEG_OPTION                = 4
+ CANOPY_STOMATAL_RESISTANCE_OPTION = 1
+ BTR_OPTION                        = 1
+ SURFACE_RUNOFF_OPTION             = 3
+ SUBSURFACE_RUNOFF_OPTION          = 3
+ DVIC_INFILTRATION_OPTION          = 1
+ SURFACE_DRAG_OPTION               = 1
+ FROZEN_SOIL_OPTION                = 1
+ SUPERCOOLED_WATER_OPTION          = 1
+ RADIATIVE_TRANSFER_OPTION         = 3
+ SNOW_ALBEDO_OPTION                = 2
+ PCP_PARTITION_OPTION              = 1
+ SNOW_THERMAL_CONDUCTIVITY         = 1
+ TBOT_OPTION                       = 2
+ TEMP_TIME_SCHEME_OPTION           = 1
+ GLACIER_OPTION                    = 1
+ SURFACE_RESISTANCE_OPTION         = 1
+ SOIL_DATA_OPTION                  = 1
+ PEDOTRANSFER_OPTION               = 1
+ CROP_OPTION                       = 1
+
+!!!!! new HRLDAS/NoahMP options added for user defined irrigation; cenlin, 05/20/2024
+ USER_DEFINE_MODE                  = 1    ! 0=user define mode off; 1=user define mode on (the options below only used when this is on)
+ SOIL_TYPE                         = -1   ! -1=use input map from hrldas_setup file; 1~19=user defined soil type based on NoahmpTable.TBL
+ CROP_TYPE                         = -1   ! -1=use input map from hrldas_setup file; 1=corn; 2=Soybean
+ PLANT_DATE                        = -1   ! -1=use input map from hrldas_setup file; >0=user defined planting date
+ IRRIGATION_ON                     = 1    ! 0=irrigation off; 1=irrigation on (replace original irrigation trigger based on SM)
+ IRRIGATION_FRAC                   = 1    ! irrigation fraction: 0~1 for 0~100%; 100% irrigation for point scale application
+ IRRIGATION_TYPE                   = 1    ! 1=above crop canopy sprinkler; 2=below canopy sprinkler (no canopy interception of water)
+ IRRIGATION_AMT                    = 1    ! irrigation water amount applied each time [mm]; after that, irrigation will be off automatically
+ IRRIGATION_DUR                    = 3600 ! time duration [seconds] to finish applying the irrigation water amount above;
+                                          ! then the irrigation apply rate is IRRIGATION_AMT/IRRIGATION_DUR consistently during IRRIGATION_DUR
+                                          ! if <0: use infiltration-based irrigation rate from model;
+!!!!! new options end
+
+
+ FORCING_TIMESTEP = 3600
+ NOAH_TIMESTEP    = 1800
+ OUTPUT_TIMESTEP  = 3600
+
+ SPLIT_OUTPUT_COUNT = 1
+ SKIP_FIRST_OUTPUT = .true.
+ RESTART_FREQUENCY_HOURS = 24
+
+ NSOIL=4
+ soil_thick_input(1) = 0.10
+ soil_thick_input(2) = 0.30
+ soil_thick_input(3) = 0.60
+ soil_thick_input(4) = 1.00
+
+ ZLVL = 10.0
+
+ SF_URBAN_PHYSICS = 0
+ USE_WUDAPT_LCZ = 0
+ 
+/
+
