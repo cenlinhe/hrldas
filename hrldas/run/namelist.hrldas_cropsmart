@@ -54,7 +54,7 @@
  GDD_TOT                           = 1750 ! -1=use input map from hrldas_setup file; >0=user defined total seasonal GDD
  IRRIGATION_ON                     = 1    ! 0=irrigation off; 1=irrigation on (replace original irrigation trigger based on SM)
  IRRIGATION_FRAC                   = 1    ! irrigation fraction: 0~1 for 0~100%; 100% irrigation for point scale application
- IRRIGATION_TYPE                   = 1    ! 1=above crop canopy sprinkler; 2=below canopy sprinkler (no canopy interception of water)
+ IRRIGATION_TYPE                   = 1    ! 1=above crop canopy sprinkler; 2=below canopy sprinkler (no canopy interception & evaporation)
  IRRIGATION_AMT                    = 1    ! irrigation water amount applied each time [mm]; after that, irrigation will be off automatically
  IRRIGATION_DUR                    = 3600 ! time duration [seconds] to finish applying the irrigation water amount above;
                                           ! then the irrigation apply rate is IRRIGATION_AMT/IRRIGATION_DUR consistently during IRRIGATION_DUR
