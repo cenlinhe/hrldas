@@ -48,8 +48,10 @@
 !!!!! new HRLDAS/NoahMP options added for user defined irrigation; cenlin, 05/20/2024
  USER_DEFINE_MODE                  = 1    ! 0=user define mode off; 1=user define mode on (the options below only used when this is on)
  SOIL_TYPE                         = -1   ! -1=use input map from hrldas_setup file; 1~19=user defined soil type based on NoahmpTable.TBL
- CROP_TYPE                         = -1   ! -1=use input map from hrldas_setup file; 1=corn; 2=Soybean
- PLANT_DATE                        = -1   ! -1=use input map from hrldas_setup file; >0=user defined planting date
+ CROP_TYPE                         = 1    ! -1=use input map from hrldas_setup file; 1=corn; 2=Soybean
+ PLANT_DATE                        = 126  ! -1=use input map from hrldas_setup file; >0=user defined planting date
+ HARVEST_DATE                      = 296  ! -1=use input map from hrldas_setup file; >0=user defined harvest date 
+ GDD_TOT                           = 1750 ! -1=use input map from hrldas_setup file; >0=user defined total seasonal GDD
  IRRIGATION_ON                     = 1    ! 0=irrigation off; 1=irrigation on (replace original irrigation trigger based on SM)
  IRRIGATION_FRAC                   = 1    ! irrigation fraction: 0~1 for 0~100%; 100% irrigation for point scale application
  IRRIGATION_TYPE                   = 1    ! 1=above crop canopy sprinkler; 2=below canopy sprinkler (no canopy interception of water)

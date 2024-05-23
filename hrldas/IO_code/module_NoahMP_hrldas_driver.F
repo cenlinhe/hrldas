@@ -274,15 +274,18 @@ contains
 !------------------------------------------------------------------------
 ! For OPT_CROP=1 (crop model), read in necessary extra fields
 !------------------------------------------------------------------------
-
-    NoahmpIO%CROPTYPE   = 0       ! make default 0% crops everywhere
-    NoahmpIO%PLANTING   = 126     ! default planting date
-    NoahmpIO%HARVEST    = 290     ! default harvest date
-    NoahmpIO%SEASON_GDD = 1605    ! default total seasonal growing degree days
-    if (NoahmpIO%IOPT_CROP == 1) then ! use crop_option=1 for reading crop extra fields
-       call READ_CROP_INPUT(NoahmpIO%HRLDAS_SETUP_FILE, NoahmpIO%XSTART, NoahmpIO%XEND, NoahmpIO%YSTART, NoahmpIO%YEND,&
-                            NoahmpIO%CROPTYPE, NoahmpIO%PLANTING, NoahmpIO%HARVEST, NoahmpIO%SEASON_GDD)
-    endif
+     if (NoahmpIO%USER_DEFINE_MODE == 1) then
+        NoahmpIO%CROPTYPE   = 1.0       ! make default 0% crops everywhere
+        NoahmpIO%PLANTING   = NoahmpIO%PLANT_DATE     ! default planting date
+        NoahmpIO%HARVEST    = NoahmpIO%HARVEST_DATE     ! default harvest date, cenlin cropsmart
+        NoahmpIO%SEASON_GDD = NoahmpIO%GDD_TOT    ! default total seasonal growing degree days, cenlin cropsmart
+       if ((NoahmpIO%GDD_TOT<0).or.(NoahmpIO%PLANT_DATE<0).or.(NoahmpIO%HARVEST_DATE<0)) then
+         if (NoahmpIO%IOPT_CROP == 1) then ! use crop_option=1 for reading crop extra fields
+            call READ_CROP_INPUT(NoahmpIO%HRLDAS_SETUP_FILE, NoahmpIO%XSTART, NoahmpIO%XEND, NoahmpIO%YSTART, NoahmpIO%YEND,&
+                             NoahmpIO%CROPTYPE, NoahmpIO%PLANTING, NoahmpIO%HARVEST, NoahmpIO%SEASON_GDD)
+         endif
+       endif
+     endif
 
 !------------------------------------------------------------------------
 ! For IOPT_TDRN = 1 or 2 READ TILE DRAIN MAP
