@@ -839,6 +839,64 @@ contains
 
 !---------------------------------------------------------------------------------------------------------
 
+  subroutine read_root_input(wrfinput_flnm,                            &
+       xstart, xend,                                                   &
+       ystart, yend,                                                   &
+       vegroot2d)
+
+    implicit none
+
+    character(len=*),          intent(in)  :: wrfinput_flnm
+    integer,                   intent(in)  :: xstart, xend, ystart, yend
+    real(kind=kind_noahmp),    dimension(xstart:xend,  ystart:yend), intent(out) :: vegroot2d
+
+    character(len=256) :: units
+    character(len=24)  :: name
+    integer :: ierr,iret
+    integer :: ncid, varid
+    integer :: rank
+
+#ifdef _PARALLEL_  
+    call MPI_COMM_RANK(MPI_COMM_WORLD, rank, ierr)
+    if (ierr /= MPI_SUCCESS) stop "MPI_COMM_RANK"
+#else
+    rank = 0
+#endif
+
+
+    ! Open the NetCDF file.
+    if (rank == 0) write(*,'("wrfinput_flnm: ''", A, "''")') trim(wrfinput_flnm)
+#ifdef _PARALLEL_
+    ierr = nf90_open_par(wrfinput_flnm, NF90_NOWRITE, MPI_COMM_WORLD, MPI_INFO_NULL, ncid)
+#else
+    ierr = nf90_open(wrfinput_flnm, NF90_NOWRITE, ncid)
+#endif
+    if (ierr /= 0) then
+       write(*,'("read_root_input:  Problem opening wrfinput file: ''", A, "''")') trim(wrfinput_flnm)
+#ifdef _PARALLEL_
+       call mpi_finalize(ierr)
+       if (ierr /= 0) write(*, '("Problem with MPI_finalize.")')
+#endif
+       stop
+    endif
+
+! Get 2D spatial map for root depth (unit: m)
+    name = "Climatological_Mean_Root_Depth"
+    iret = nf90_inq_varid(ncid,  name,  varid)
+    if (iret == 0) then
+      ierr = nf90_get_var(ncid, varid, vegroot2d, start=(/xstart,ystart/), count=(/xend-xstart+1,yend-ystart+1/))
+    else
+      write(*,*) "MODULE_HRLDAS_NETCDF_IO:  Problem finding variable '"//trim(name)//"' in NetCDF file. Using default values."
+    endif
+
+! Close the NetCDF file
+    ierr = nf90_close(ncid)
+    if (ierr /= 0) stop "MODULE_NOAHLSM_HRLDAS_INPUT:  read_root_input:  NF90_CLOSE"
+
+  end subroutine read_root_input
+
+!---------------------------------------------------------------------------------------------------------
+
   subroutine read_tile_drain_map(tdinput_flnm,                            &
        xstart, xend,                                                      &
        ystart, yend,                                                      &

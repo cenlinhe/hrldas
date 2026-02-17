@@ -309,6 +309,14 @@ contains
     endif
 
 !------------------------------------------------------------------------
+! For dynamic root scheme, IOPT_ROOT = 1, read in input root depth map
+!------------------------------------------------------------------------
+    if (NoahmpIO%IOPT_ROOT == 1) then
+       call READ_ROOT_INPUT(NoahmpIO%HRLDAS_SETUP_FILE, NoahmpIO%XSTART, NoahmpIO%XEND, NoahmpIO%YSTART, NoahmpIO%YEND,&
+                               NoahmpIO%VegRoot2D)
+    endif
+
+!------------------------------------------------------------------------
 ! For SF_URBAN_PHYSICS > 0 read 2D map of urban parameters
 !------------------------------------------------------------------------
 
