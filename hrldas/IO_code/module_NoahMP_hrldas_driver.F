@@ -312,7 +312,7 @@ contains
 ! For dynamic root scheme, IOPT_ROOT = 1, read in input root depth map
 !------------------------------------------------------------------------
     if (NoahmpIO%IOPT_ROOT == 1) then
-       call READ_ROOT_INPUT(NoahmpIO%HRLDAS_SETUP_FILE, NoahmpIO%XSTART, NoahmpIO%XEND, NoahmpIO%YSTART, NoahmpIO%YEND,&
+       call READ_ROOT_INPUT(NoahmpIO%ROOT_INPUT_FILE, NoahmpIO%XSTART, NoahmpIO%XEND, NoahmpIO%YSTART, NoahmpIO%YEND,&
                                NoahmpIO%VegRoot2D)
     endif
 
