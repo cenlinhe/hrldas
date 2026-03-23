@@ -839,7 +839,7 @@ contains
 
 !---------------------------------------------------------------------------------------------------------
 
-  subroutine read_root_input(wrfinput_flnm,                            &
+  subroutine read_root_input2d(wrfinput_flnm,                          &
        xstart, xend,                                                   &
        ystart, yend,                                                   &
        vegroot2d)
@@ -851,7 +851,7 @@ contains
     real(kind=kind_noahmp),    dimension(xstart:xend,  ystart:yend), intent(out) :: vegroot2d
 
     character(len=256) :: units
-    character(len=24)  :: name
+    character(len=256)  :: name
     integer :: ierr,iret
     integer :: ncid, varid
     integer :: rank
@@ -872,7 +872,7 @@ contains
     ierr = nf90_open(wrfinput_flnm, NF90_NOWRITE, ncid)
 #endif
     if (ierr /= 0) then
-       write(*,'("read_root_input:  Problem opening wrfinput file: ''", A, "''")') trim(wrfinput_flnm)
+       write(*,'("read_root_input2d:  Problem opening wrfinput file: ''", A, "''")') trim(wrfinput_flnm)
 #ifdef _PARALLEL_
        call mpi_finalize(ierr)
        if (ierr /= 0) write(*, '("Problem with MPI_finalize.")')
@@ -891,9 +891,67 @@ contains
 
 ! Close the NetCDF file
     ierr = nf90_close(ncid)
-    if (ierr /= 0) stop "MODULE_NOAHLSM_HRLDAS_INPUT:  read_root_input:  NF90_CLOSE"
+    if (ierr /= 0) stop "MODULE_NOAHLSM_HRLDAS_INPUT:  read_root_input2d:  NF90_CLOSE"
 
-  end subroutine read_root_input
+  end subroutine read_root_input2d
+
+!---------------------------------------------------------------------------------------------------------
+
+  subroutine read_root_input3d(wrfinput_flnm,                          &
+       xstart, xend,                                                   &
+       ystart, yend,                                                   &
+       vegroot3d)
+
+    implicit none
+
+    character(len=*),          intent(in)  :: wrfinput_flnm
+    integer,                   intent(in)  :: xstart, xend, ystart, yend
+    real(kind=kind_noahmp),    dimension(xstart:xend,ystart:yend, 12), intent(out) :: vegroot3d
+
+    character(len=256) :: units
+    character(len=256)  :: name
+    integer :: ierr,iret
+    integer :: ncid, varid
+    integer :: rank
+
+#ifdef _PARALLEL_  
+    call MPI_COMM_RANK(MPI_COMM_WORLD, rank, ierr)
+    if (ierr /= MPI_SUCCESS) stop "MPI_COMM_RANK"
+#else
+    rank = 0
+#endif
+
+
+    ! Open the NetCDF file.
+    if (rank == 0) write(*,'("wrfinput_flnm: ''", A, "''")') trim(wrfinput_flnm)
+#ifdef _PARALLEL_
+    ierr = nf90_open_par(wrfinput_flnm, NF90_NOWRITE, MPI_COMM_WORLD, MPI_INFO_NULL, ncid)
+#else
+    ierr = nf90_open(wrfinput_flnm, NF90_NOWRITE, ncid)
+#endif
+    if (ierr /= 0) then
+       write(*,'("read_root_input3d:  Problem opening wrfinput file: ''", A, "''")') trim(wrfinput_flnm)
+#ifdef _PARALLEL_
+       call mpi_finalize(ierr)
+       if (ierr /= 0) write(*, '("Problem with MPI_finalize.")')
+#endif
+       stop
+    endif
+
+! Get 2D spatial map for root depth (unit: m)
+    name = "Climatological_Monthly_Root_Depth"
+    iret = nf90_inq_varid(ncid,  name,  varid)
+    if (iret == 0) then
+      ierr = nf90_get_var(ncid, varid, vegroot3d,start=(/xstart,ystart,1/), count=(/xend-xstart+1,yend-ystart+1,12/))
+    else
+      write(*,*) "MODULE_HRLDAS_NETCDF_IO:  Problem finding variable '"//trim(name)//"' in NetCDF file. Using default values."
+    endif
+
+! Close the NetCDF file
+    ierr = nf90_close(ncid)
+    if (ierr /= 0) stop "MODULE_NOAHLSM_HRLDAS_INPUT:  read_root_input3d:  NF90_CLOSE"
+
+  end subroutine read_root_input3d
 
 !---------------------------------------------------------------------------------------------------------
 

@@ -309,11 +309,17 @@ contains
     endif
 
 !------------------------------------------------------------------------
-! For dynamic root scheme, IOPT_ROOT = 1, read in input root depth map
+! For dynamic root scheme:
+! IOPT_ROOT = 1, read in input annual climatological root depth map
+! IOPT_ROOT = 2, read in input monthly climatological root depth map
 !------------------------------------------------------------------------
     if (NoahmpIO%IOPT_ROOT == 1) then
-       call READ_ROOT_INPUT(NoahmpIO%ROOT_INPUT_FILE, NoahmpIO%XSTART, NoahmpIO%XEND, NoahmpIO%YSTART, NoahmpIO%YEND,&
+       call READ_ROOT_INPUT2D(NoahmpIO%ROOT_INPUT_FILE, NoahmpIO%XSTART, NoahmpIO%XEND, NoahmpIO%YSTART, NoahmpIO%YEND,&
                                NoahmpIO%VegRoot2D)
+    endif
+    if (NoahmpIO%IOPT_ROOT == 2) then
+       call READ_ROOT_INPUT3D(NoahmpIO%ROOT_INPUT_FILE, NoahmpIO%XSTART, NoahmpIO%XEND, NoahmpIO%YSTART, NoahmpIO%YEND,&
+                               NoahmpIO%VegRoot3D)
     endif
 
 !------------------------------------------------------------------------
